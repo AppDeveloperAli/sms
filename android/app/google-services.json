@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1078429800698",
+    "project_id": "student-mentoring-system-60709",
+    "storage_bucket": "student-mentoring-system-60709.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1078429800698:android:d2bf50a9e95752f6815143",
+        "android_client_info": {
+          "package_name": "com.student.mentoring.system"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1078429800698-kh03addg4qrcedr01fc2pp385ig2jrui.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.student.mentoring.system",
+            "certificate_hash": "906f347d50ad16f68789b664dbe32f41e6d1a8d8"
+          }
+        },
+        {
+          "client_id": "1078429800698-rhr4eaqidrc1q2ck7odgn7o2j435t3cl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBc_hAHDxx3-bZg-yqzWJIfXNG1hsQfZrk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1078429800698-rhr4eaqidrc1q2ck7odgn7o2j435t3cl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
