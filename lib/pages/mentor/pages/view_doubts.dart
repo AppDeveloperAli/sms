@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:student_mentogin_system/snackBar.dart';
+import 'pdfViewer.dart';
 
 // ignore: must_be_immutable
 class ViewDoubts extends StatefulWidget {
@@ -95,7 +96,7 @@ class _ViewDoubtsState extends State<ViewDoubts> {
                 return Card(
                   child: Padding(
                     padding: const EdgeInsets.all(10),
-                    child: Row(
+                    child: Column(children: [Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Flexible(
@@ -108,117 +109,6 @@ class _ViewDoubtsState extends State<ViewDoubts> {
                                     'Department : ${doc[index]["department"]}'),
                                 Text('Gender : ${doc[index]["gender"]}'),
                                 Text('Birth Date : ${doc[index]["birthDate"]}'),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      builder: (context) {
-                                        return Form(
-                                          key: formKey,
-                                          child: Container(
-                                            padding: const EdgeInsets.all(10),
-                                            child: Column(
-                                              children: [
-                                                TextFormField(
-                                                  enabled: false,
-                                                  minLines: 3,
-                                                  maxLines: 10,
-                                                  initialValue: doc[index]
-                                                      ["doubts"],
-                                                  decoration: InputDecoration(
-                                                    filled: true,
-                                                    fillColor:
-                                                        Colors.grey.shade300,
-                                                    labelText: "Doubts",
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 10,
-                                                ),
-                                                TextFormField(
-                                                  minLines: 3,
-                                                  maxLines: 10,
-                                                  decoration:
-                                                      const InputDecoration(
-                                                    border:
-                                                        OutlineInputBorder(),
-                                                    label: Text(
-                                                      "Reply Message",
-                                                    ),
-                                                    hintText: "Reply Message",
-                                                    alignLabelWithHint: true,
-                                                  ),
-                                                  controller: replyController,
-                                                  validator: (value) {
-                                                    if (value == null ||
-                                                        value.isEmpty) {
-                                                      return "Input Reply Message";
-                                                    } else if (value.length <
-                                                        10) {
-                                                      return "Minimum 10 Characters Length";
-                                                    }
-                                                    return null;
-                                                  },
-                                                ),
-                                                const SizedBox(
-                                                  height: 10,
-                                                ),
-                                                // ElevatedButton(
-                                                //   onPressed: ()async{
-                                                //     FilePickerResult? result = await FilePicker.platform.pickFiles();
-                                                //
-                                                //     if (result != null) {
-                                                //       File file = File(result.files.single.path.toString());
-                                                //       PlatformFile fileDetailes = await result.files.first;
-                                                //       print(fileDetailes.name);
-                                                //
-                                                //       CustomSnackBar(context,Text('File Name : ${fileDetailes.name}'));
-                                                //
-                                                //     } else {
-                                                //       setState(() {
-                                                //         CustomSnackBar(context,Text('You cancelled picking file..'));
-                                                //       });
-                                                //     }
-                                                //   },
-                                                //   child: Text(
-                                                //     'Pick a File',
-                                                //   ),
-                                                // ),
-
-                                                const SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    loading
-                                                        ? const CircularProgressIndicator()
-                                                        : Expanded(
-                                                            child:
-                                                                ElevatedButton(
-                                                              onPressed: () {
-                                                                submitReplyHandler(
-                                                                  doc[index]
-                                                                      ["id"],
-                                                                );
-                                                              },
-                                                              child: const Text(
-                                                                "Send Reply",
-                                                              ),
-                                                            ),
-                                                          ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                  child: const Text("Reply Doubts"),
-                                )
                               ],
                             ),
                           ),
@@ -227,6 +117,129 @@ class _ViewDoubtsState extends State<ViewDoubts> {
                             height: 125,
                           )
                         ]),
+                      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
+                        Expanded(child: Padding(padding: EdgeInsets.only(right: 5,left: 5),child: ElevatedButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return Form(
+                                  key: formKey,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Column(
+                                      children: [
+                                        TextFormField(
+                                          enabled: false,
+                                          minLines: 3,
+                                          maxLines: 10,
+                                          initialValue: doc[index]
+                                          ["doubts"],
+                                          decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor:
+                                            Colors.grey.shade300,
+                                            labelText: "Doubts",
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        TextFormField(
+                                          minLines: 3,
+                                          maxLines: 10,
+                                          decoration:
+                                          const InputDecoration(
+                                            border:
+                                            OutlineInputBorder(),
+                                            label: Text(
+                                              "Reply Message",
+                                            ),
+                                            hintText: "Reply Message",
+                                            alignLabelWithHint: true,
+                                          ),
+                                          controller: replyController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "Input Reply Message";
+                                            } else if (value.length <
+                                                10) {
+                                              return "Minimum 10 Characters Length";
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        // ElevatedButton(
+                                        //   onPressed: ()async{
+                                        //     FilePickerResult? result = await FilePicker.platform.pickFiles();
+                                        //
+                                        //     if (result != null) {
+                                        //       File file = File(result.files.single.path.toString());
+                                        //       PlatformFile fileDetailes = await result.files.first;
+                                        //       print(fileDetailes.name);
+                                        //
+                                        //       CustomSnackBar(context,Text('File Name : ${fileDetailes.name}'));
+                                        //
+                                        //     } else {
+                                        //       setState(() {
+                                        //         CustomSnackBar(context,Text('You cancelled picking file..'));
+                                        //       });
+                                        //     }
+                                        //   },
+                                        //   child: Text(
+                                        //     'Pick a File',
+                                        //   ),
+                                        // ),
+
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          children: [
+                                            loading
+                                                ? const CircularProgressIndicator()
+                                                : Expanded(
+                                              child:
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  submitReplyHandler(
+                                                    doc[index]
+                                                    ["id"],
+                                                  );
+                                                },
+                                                child: const Text(
+                                                  "Send Reply",
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: const Text("Reply Doubts"),
+                        ),)),
+                        Expanded(child: ElevatedButton(onPressed: (){
+                          if(doc[index]["PDF"] == ""){
+                            CustomSnackBar(context,Text('No PDF file Found!..'));
+                          } else {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => PDFViewerScreen(pdfPath: doc[index]["PDF"])));
+
+                          }
+
+                        }, child: Text('View PDf')),)
+
+                      ],)],)
                   ),
                 );
               },

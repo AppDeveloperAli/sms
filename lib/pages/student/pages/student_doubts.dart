@@ -1,13 +1,12 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:student_mentogin_system/snackBar.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
-// ignore: must_be_immutable
 class StudentDoubts extends StatefulWidget {
-  // ignore: prefer_typing_uninitialized_variables
   var data;
   StudentDoubts(this.data, {super.key});
 
@@ -31,8 +30,26 @@ class _StudentDoubtsState extends State<StudentDoubts> {
         setState(() {
           loading = true;
         });
+        String urlDown = '';
+
+        FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+        if (result != null) {
+          File file = File(result.files.single.path!);
+          String fileName = result.files.single.name;
+          Reference storageRef = FirebaseStorage.instance.ref().child(fileName);
+          UploadTask uploadTask = storageRef.putFile(file);
+
+          // Wait for the upload to complete
+          await uploadTask.whenComplete(() {
+          });
+
+          urlDown = await storageRef.getDownloadURL();
+
+        }
+
         try {
           var db = FirebaseFirestore.instance;
+
           await db.collection("doubts").add(
             {
               "studentId": studentDetail["id"],
@@ -44,6 +61,7 @@ class _StudentDoubtsState extends State<StudentDoubts> {
               "department": studentDetail["department"],
               "photo": studentDetail["photo"],
               "doubts": doubtsController.text,
+              "PDF": urlDown,
               "reply": ""
             },
           );
@@ -77,7 +95,25 @@ class _StudentDoubtsState extends State<StudentDoubts> {
       }
     }
 
-    String fileName = 'Picked File name show here...';
+    String _filePath = '';
+
+    Future<String?> pickPDFFile() async {
+
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+      );
+
+      if (result != null) {
+        setState(() {
+          _filePath = result.files.single.path!;
+        });
+        PlatformFile file = result.files.first;
+        return file.path;
+      } else {
+        return null;
+      }
+    }
 
     return SingleChildScrollView(
       child: Padding(
@@ -187,32 +223,28 @@ class _StudentDoubtsState extends State<StudentDoubts> {
                   return null;
                 },
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              // ElevatedButton(
-              //   onPressed: ()async{
-              //     FilePickerResult? result = await FilePicker.platform.pickFiles();
-              //
-              //     if (result != null) {
-              //       File file = File(result.files.single.path.toString());
-              //       PlatformFile fileDetailes = await result.files.first;
-              //       print(fileDetailes.name);
-              //
-              //       fileName = fileDetailes.name;
-              //
-              //        CustomSnackBar(context,Text('File Name : ${fileDetailes.name}'));
-              //
-              //     } else {
-              //       setState(() {
-              //         CustomSnackBar(context,Text('You cancelled picking file..'));
-              //       });
-              //     }
-              //   },
-              //   child: Text(
-              // 'Pick a File',
-              //   ),
+              // const SizedBox(
+              //   height: 10,
               // ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Text('Selected PDF File'),
+              //     Text(
+              //       _filePath,
+              //       style: TextStyle(fontWeight: FontWeight.bold),
+              //     ),
+              //     ElevatedButton(
+              //     onPressed: () async {
+              //       String? filePath = await pickPDFFile();
+              //       if (filePath != null) {
+              //         // Do something with the picked file path
+              //         print('Picked file path: $filePath');
+              //       }
+              //     },
+              //     child: Text('Pick PDF File'),
+              //   ),
+              // ],),
               const SizedBox(
                 height: 10,
               ),
@@ -225,7 +257,7 @@ class _StudentDoubtsState extends State<StudentDoubts> {
                           child: ElevatedButton(
                             onPressed: submitHandler,
                             child: const Text(
-                              "Submit Doubts",
+                              "Pick a PDF & Submit Doubts",
                             ),
                           ),
                         )
